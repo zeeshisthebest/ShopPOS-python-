@@ -88,7 +88,15 @@ class ItemsRow(tk.Frame):
     def remove_self(self):
         self.pack_forget()
         self.destroy()
-        del self.list[self.index-1]
+        currentIndex = self.list.index(self)
+        del self.list[currentIndex]
+        for i in range(currentIndex, len(self.list)):
+            widget = self.list[i]
+            widget.serial1.configure(state="normal")
+            widget.serial1.delete(0, tk.END)
+            widget.serial1.insert(0, currentIndex + 1)
+            widget.serial1.configure(state="disabled")
+            currentIndex += 1
 
     def total(self, var, index, mode):
         self.total.configure(state="normal")

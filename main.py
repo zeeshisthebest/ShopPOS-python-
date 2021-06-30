@@ -24,11 +24,9 @@ def root():
         phoneEntryExtension.unbind('<Button-1>', on_ext_click_id)
 
     def add_row():
-
-        rowToAdd = len(all_entries) + 2
-        itemRowFrame = iT(itemFrame, entries=all_entries, index=rowToAdd-1, header=False)
-        itemRowFrame.grid(row=rowToAdd, columnspan=5, sticky=W + E)
-
+        rows = len(all_entries) + 1
+        itemRowFrame = iT(itemFrame, entries=all_entries, index=rows, header=False)
+        itemRowFrame.grid(columnspan=5, sticky=W + E)
         all_entries.append(itemRowFrame)
 
     APP_NAME = "Customer Invoicing - Saleem Chemicals"
@@ -111,7 +109,7 @@ def root():
 
     # Item's List Holder--------------------------------------------------------------------------
     itemFrame = tk.Frame(ui_root)
-    itemFrame.grid(sticky=W+E)
+    itemFrame.grid(row=7, sticky=W+E+N+S )
 
     itemFrame.columnconfigure(0, weight=1)
     itemFrame.columnconfigure(1, weight=3)
@@ -119,29 +117,21 @@ def root():
     itemFrame.columnconfigure(3, weight=1)
     itemFrame.columnconfigure(4, weight=1)
 
-    tk.Label(master=itemFrame).grid(row=0)  # An empty Row
+    tk.Label(master=ui_root).grid(row=5 , sticky=E + W)  # An empty Row
 
-    row = iT(itemFrame, header=True)
-    row.grid(row=1, columnspan=5, sticky=W+E)
+    row = iT(ui_root, header=True)
+    row.grid(row=6, columnspan=5, sticky=W+E)
 
     addBtn = Button(ui_root, text="Add New Item", command=add_row)
     addBtn.grid()
     add_row()
-
-    def print_len():
-        for i in all_entries:
-            item = i.item.get()
-            print(item)
-
-    Button(ui_root, text="Print length", command=print_len).grid()
 
     tk.Label(master=ui_root).grid()
     WIDTH = ui_root.winfo_reqwidth()
     HEIGHT = ui_root.winfo_reqheight()
 
     def print_len():
-        for x, i in all_entries:
-            print(i, x)
+        print(len(all_entries))
 
     def check(e):
         nonlocal WIDTH, HEIGHT
