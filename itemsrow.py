@@ -95,7 +95,21 @@ class ItemsRow(tk.Frame):
         self.total.delete(0, tk.END)
         q = self.quantity.get()
         u = self.unit.get()
-        q = 0 if not q.isnumeric() else int(q)
-        u = 0 if not u.isnumeric() else int(q)
-        self.total.insert(0,q*u)
+
+        if q == '':
+           q = 0.0
+        elif not q.isnumeric():
+            self.qVar.set(0)
+            q = 0.0
+        else:
+            q = float(q)
+        if u == '':
+            u = 0.0
+        elif not u.isnumeric():
+            self.unitVar.set(0)
+            u = 0.0
+        else:
+            u = float(u)
+
+        self.total.insert(0, q*u)
         self.total.configure(state="disabled")
