@@ -14,6 +14,12 @@ class ItemsRow(tk.Frame):
         self.index = index
         self.configure_column()
         self.list = entries
+        self.unitVar = tk.StringVar()
+        self.unitVar.set(0)
+        self.qVar = tk.StringVar()
+        self.qVar.set(0)
+        self.unitVar.trace_add("write", self.total)
+        self.qVar.trace_add("write", self.total)
 
         if header:
             self.make_header()
@@ -62,11 +68,15 @@ class ItemsRow(tk.Frame):
 
         self.item = tk.Entry(self, justify="left", bg=ROW_COLOR)
 
-        self.unit = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE)
+        self.unit = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE, textvar=self.unitVar)
+        # self.unit.insert(0, 0)
 
-        self.quantity = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE)
+        self.quantity = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE, textvar=self.qVar)
+        # self.quantity.insert(0, 0)
 
         self.total = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE)
+        self.total.insert(0, 0)
+        self.total.configure(state="disabled")
 
     def add_to_grid(self):
         self.serial.grid(row=0, column=0, sticky=E + W, columnspan=1)
@@ -79,3 +89,13 @@ class ItemsRow(tk.Frame):
         self.pack_forget()
         self.destroy()
         del self.list[self.index-1]
+
+    def total(self, var, index, mode):
+        self.total.configure(state="normal")
+        self.total.delete(0, tk.END)
+        q = self.quantity.get()
+        u = self.unit.get()
+        q = 0 if not q.isnumeric() else int(q)
+        u = 0 if not u.isnumeric() else int(q)
+        self.total.insert(0,q*u)
+        self.total.configure(state="disabled")

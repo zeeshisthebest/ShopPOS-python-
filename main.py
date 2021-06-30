@@ -130,7 +130,8 @@ def root():
 
     def print_len():
         for i in all_entries:
-            print(f"{i} -> {all_entries.index(i)}")
+            item = i.item.get()
+            print(item)
 
     Button(ui_root, text="Print length", command=print_len).grid()
 
