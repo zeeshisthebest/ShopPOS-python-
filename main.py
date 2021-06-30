@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from datetime import date
+from itemsrow import ItemsRow as iT
 
 
 def root():
@@ -59,8 +60,8 @@ def root():
         total = tk.Label(master=itemRowFrame, text="Total", justify='center', bg=CUSTOMER_BG)
         total.grid(row=0, column=4, sticky=E + W, columnspan=1)
 
-        removeBtn = Button(itemRowFrame, text="-", command=lambda: remove(int(serial.get()) - 1))
-        removeBtn.grid(row=0, column=5, sticky=E + W, columnspan=1)
+        # removeBtn = Button(itemRowFrame, text="-", command=lambda: remove(int(serial.get()) - 1))
+        # removeBtn.grid(row=0, column=5, sticky=E + W, columnspan=1)
 
         all_entries.append(itemRowFrame)
 
@@ -151,25 +152,12 @@ def root():
     itemFrame.columnconfigure(2, weight=1)
     itemFrame.columnconfigure(3, weight=1)
     itemFrame.columnconfigure(4, weight=1)
-    itemFrame.columnconfigure(5, weight=1)
 
-    tk.Label(master=itemFrame).grid(row=0)
+    tk.Label(master=itemFrame).grid(row=0)  # An empty Row
 
-    serialLabel = tk.Label(master=itemFrame, text="#", justify='center', bg=CUSTOMER_BG)
-    serialLabel.grid(row=1, column=0, sticky=E+W, columnspan=1)
-
-    itemNameLabel = tk.Label(master=itemFrame, text="Items", justify='center', bg=ITEM_BG)
-    itemNameLabel.grid(row=1, column=1, sticky=E+W, columnspan=1)
-
-    unitLabel = tk.Label(master=itemFrame, text="Unit", justify='center', bg=CUSTOMER_BG)
-    unitLabel.grid(row=1, column=2, sticky=E+W, columnspan=1)
-
-    quantityLabel = tk.Label(master=itemFrame, text="Quantity", justify='center', bg=ITEM_BG)
-    quantityLabel.grid(row=1, column=3, sticky=E+W, columnspan=1)
-
-    totalLabel = tk.Label(master=itemFrame, text="Total", justify='center', bg=CUSTOMER_BG)
-    totalLabel.grid(row=1, column=4, sticky=E+W, columnspan=1)
-    tk.Button(master=itemFrame,text="-").grid(row=1, column=5, sticky=E+W, columnspan=1)
+    values = ["# s", "Items", "Unit", "Quantity", "Total"]
+    row = iT(itemFrame, values, header=True)
+    row.grid(row=1, columnspan=5, sticky=W+E)
 
     addBtn = Button(ui_root, text="Add New Item", command=add_row)
     addBtn.grid()
