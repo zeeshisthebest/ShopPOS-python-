@@ -23,45 +23,11 @@ def root():
         phoneEntryExtension.delete(0, END)
         phoneEntryExtension.unbind('<Button-1>', on_ext_click_id)
 
-    def remove_self(g):
-        g.pack_forget()
-        g.destroy()
-
     def add_row():
-        def remove(index):
-            print(index, f"length{len(all_entries)}")
-            slf = all_entries[index]
-            remove_self(slf)
-            all_entries.remove(slf)
 
-        rowToAdd = len(all_entries) + 3
-        itemRowFrame = tk.Frame(itemFrame)
-        itemRowFrame.grid(row=rowToAdd, sticky=W + E, columnspan=6)
-
-        itemRowFrame.columnconfigure(0, weight=1)
-        itemRowFrame.columnconfigure(1, weight=3)
-        itemRowFrame.columnconfigure(2, weight=1)
-        itemRowFrame.columnconfigure(3, weight=1)
-        itemRowFrame.columnconfigure(4, weight=1)
-        itemRowFrame.columnconfigure(5, weight=1)
-
-        serial = tk.Label(master=itemRowFrame, text="#", justify='center', bg=ITEM_BG)
-        serial.grid(row=0, column=0, sticky=E + W, columnspan=1)
-
-        itemName = tk.Label(master=itemRowFrame, text="Items", justify='center')
-        itemName.grid(row=0, column=1, sticky=E + W, columnspan=1)
-
-        unit = tk.Label(master=itemRowFrame, text="Unit", justify='center', bg=ITEM_BG)
-        unit.grid(row=0, column=2, sticky=E + W, columnspan=1)
-
-        quantity = tk.Label(master=itemRowFrame, text="Quantity", justify='center')
-        quantity.grid(row=0, column=3, sticky=E + W, columnspan=1)
-
-        total = tk.Label(master=itemRowFrame, text="Total", justify='center', bg=CUSTOMER_BG)
-        total.grid(row=0, column=4, sticky=E + W, columnspan=1)
-
-        # removeBtn = Button(itemRowFrame, text="-", command=lambda: remove(int(serial.get()) - 1))
-        # removeBtn.grid(row=0, column=5, sticky=E + W, columnspan=1)
+        rowToAdd = len(all_entries) + 2
+        itemRowFrame = iT(itemFrame, entries=all_entries, index=rowToAdd-1, header=False)
+        itemRowFrame.grid(row=rowToAdd, columnspan=5, sticky=W + E)
 
         all_entries.append(itemRowFrame)
 
@@ -97,7 +63,7 @@ def root():
 
     # To show the date
     dateLabel = tk.Label(master=informationFrame, text=f"Date: {DATE}")
-    dateLabel.grid(row=1, column=3, padx=200)
+    dateLabel.grid(row=1, column=2, padx=200)
 
     # Padding after invoice number
     padding_label2 = tk.Label(master=informationFrame).grid(row=2)
@@ -155,17 +121,26 @@ def root():
 
     tk.Label(master=itemFrame).grid(row=0)  # An empty Row
 
-    values = ["# s", "Items", "Unit", "Quantity", "Total"]
-    row = iT(itemFrame, values, header=True)
+    row = iT(itemFrame, header=True)
     row.grid(row=1, columnspan=5, sticky=W+E)
 
     addBtn = Button(ui_root, text="Add New Item", command=add_row)
     addBtn.grid()
     add_row()
 
+    def print_len():
+        for i in all_entries:
+            print(f"{i} -> {all_entries.index(i)}")
+
+    Button(ui_root, text="Print length", command=print_len).grid()
+
     tk.Label(master=ui_root).grid()
     WIDTH = ui_root.winfo_reqwidth()
     HEIGHT = ui_root.winfo_reqheight()
+
+    def print_len():
+        for x, i in all_entries:
+            print(i, x)
 
     def check(e):
         nonlocal WIDTH, HEIGHT
