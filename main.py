@@ -2,12 +2,11 @@ import tkinter as tk
 from tkinter import *
 from datetime import date
 from customerinfo import CustomerInfo as ci
-import itemsrow
 import popups
-import scrollcanvas
 from itemsrow import ItemsRow as iT
 
 CUSTOMER_BG = "#c6c6c6"
+PAD_HOR = 5
 
 
 def root():
@@ -17,8 +16,8 @@ def root():
         itemRowFrame.grid(columnspan=5, sticky=W + E)
         all_entries.append(itemRowFrame)
 
-    def warning_popup(msg):
-        popups.PopUps(msg, rem_all)
+    def warning_popup(msg, method):
+        popups.PopUps(msg, method=method)
 
     def rem_all():
         while all_entries:
@@ -44,16 +43,18 @@ def root():
 
     # INFORMATION FRAME ---------------------------------------------------------------------------
     customer = ci(parent=ui_root, DATE=DATE, INVOICE=INVOICE)
-    customer.grid()
+    customer.grid(padx=PAD_HOR, sticky=E + W)
     # INFORMATION END ----------------------------------------------------------------------------
+
     tk.Label(master=ui_root).grid(row=5, sticky=E + W)  # An empty Row
+
     # Item's List Holder--------------------------------------------------------------------------
     # Header row for the items
     header_row = iT(ui_root, header=True)
-    header_row.grid(row=6, columnspan=5, sticky=W + E, padx=10)
+    header_row.grid(row=6, columnspan=5, sticky=W + E, padx=PAD_HOR)
 
     itemFrame = tk.Frame(ui_root)
-    itemFrame.grid(row=7, columnspan=5, column=0, sticky=W + E + N + S, padx=10)
+    itemFrame.grid(row=7, columnspan=5, column=0, sticky=W + E + N + S, padx=PAD_HOR)
 
     itemFrame.columnconfigure(0, weight=1)
     itemFrame.columnconfigure(1, weight=3)
@@ -82,14 +83,31 @@ def root():
 
     # Button to remove all and add the new rows
     rmBtn = Button(totalFrame, text="Remove All Items", command=lambda: warning_popup("Are you sure you want to "
-                                                                                      "remove all the items?"))
+                                                                                      "remove all the items?", rem_all))
     rmBtn.grid(row=1, column=0, sticky=E, padx=5)
 
     addBtn = Button(totalFrame, text="Add New Item", command=lambda: add_row(itemFrame, totalVar))
     addBtn.grid(row=1, column=1, sticky=W, padx=5)
     # TOTAL FRAME ENDS --------------------------------------------------------------------------------
 
-    tk.Label(master=ui_root).grid()
+    # SAVING BUTTONS FRAME ----------------------------------------------------------------------------
+    buttonFrame = tk.Frame(master=ui_root)
+    buttonFrame.grid(sticky=E + W)
+
+    saveExcelBtn = tk.Button(master=buttonFrame, text="Save in Excel")
+    saveExcelBtn.pack(side="right", padx=PAD_HOR, pady=5)
+
+    savePdfBtn = tk.Button(master=buttonFrame, text="Save in PDF/Print")
+    savePdfBtn.pack(side="right", padx=PAD_HOR, pady=5)
+
+    # Exit Button
+    tk.Button(master=buttonFrame, text="EXIT",
+              command=lambda: warning_popup("Do you really want to exit?", ui_root.destroy))\
+        .pack(side='left', padx=PAD_HOR, pady=5, anchor='center')
+
+    # SAVING BUTTONS FRAME END ------------------------------------------------------------------------
+
+    # tk.Label(master=ui_root).grid()
 
     def check(e):
         WIDTH = ui_root.winfo_width()

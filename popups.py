@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 
-
 # class PopUps(tk.Tk):
 #     def __init__(self, parent, message):
 #         super().__init__()
@@ -31,9 +30,9 @@ class PopUps(tk.Toplevel):
         self.resizable(width=False, height=False)
 
     def remove(self, method):
-        method()
         self.grab_release()
         self.destroy()
+        method()
 
 
 class ConfirmWarning:

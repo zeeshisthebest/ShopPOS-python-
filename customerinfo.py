@@ -49,11 +49,9 @@ class CustomerInfo(tk.Frame):
         # Phone number Views
         phoneLabel = tk.Label(master=self, text=PHONE_TITLE, bg=CUSTOMER_BG, width=len(CUSTOMER_TITLE) + 2)
         phoneLabel.grid(row=4, padx=10)
-
         # Frame to hold code and extension
         phoneFrame = tk.Frame(self)
         phoneFrame.grid(row=4, column=1, sticky="W", columnspan=5)
-
         # Code
         self.phoneEntryCode = Entry(master=phoneFrame, width=7, textvariable=self.codeVar, justify="right")
         self.phoneEntryCode.grid(row=0, column=0)
