@@ -89,7 +89,7 @@ class ItemsRow(tk.Frame):
         self.total.grid(row=0, column=9, sticky=E + W, columnspan=1)
 
     def remove_self(self):
-        self.pack_forget()
+        self.grid_forget()
         self.destroy()
         currentIndex = self.list.index(self)
         del self.list[currentIndex]

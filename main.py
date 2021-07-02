@@ -3,8 +3,11 @@ from tkinter import *
 from datetime import date
 
 import itemsrow
+import popups
 import scrollcanvas
 from itemsrow import ItemsRow as iT
+
+CUSTOMER_BG = "#c6c6c6"
 
 
 def root():
@@ -32,11 +35,20 @@ def root():
         itemRowFrame.grid(columnspan=5, sticky=W + E)
         all_entries.append(itemRowFrame)
 
+    def warning_popup(msg):
+        popups.PopUps(msg, rem_all)
+
+    def rem_all():
+        while all_entries:
+            all_entries[0].grid_remove()
+            all_entries[0].destroy()
+            del all_entries[0]
+        add_row(itemFrame, totalVar)
+
     APP_NAME = "Customer Invoicing - Saleem Chemicals"
     CUSTOMER_TITLE = "Customer Name: "
     PHONE_TITLE = "Enter the Number:"
     INVOICE = "00000"
-    CUSTOMER_BG = "#c6c6c6"
     DATE = date.today()
     all_entries = []
 
@@ -114,10 +126,10 @@ def root():
     # Item's List Holder--------------------------------------------------------------------------
     # Header row for the items
     header_row = iT(ui_root, header=True)
-    header_row.grid(row=6, columnspan=5, sticky=W + E)
+    header_row.grid(row=6, columnspan=5, sticky=W + E, padx=10)
 
     itemFrame = tk.Frame(ui_root)
-    itemFrame.grid(row=7, columnspan=5, column=0, sticky=W + E + N + S)
+    itemFrame.grid(row=7, columnspan=5, column=0, sticky=W + E + N + S, padx=10)
 
     itemFrame.columnconfigure(0, weight=1)
     itemFrame.columnconfigure(1, weight=3)
@@ -125,36 +137,37 @@ def root():
     itemFrame.columnconfigure(3, weight=1)
     itemFrame.columnconfigure(4, weight=1)
 
-    # scrollar = scrollcanvas.ScrollableFrame(itemFrame, itemsrow)
-    # region = scrollar.frame
-    add_row(itemFrame, total=totalVar)
+    for i in range(0,5):
+        add_row(itemFrame, total=totalVar)
+
     # ITEM FRAMES END ------------------------------------------------------------------------------------
 
-    # The total row data
-    totalFrame = tk.Frame(master=ui_root, bg=CUSTOMER_BG)
-    totalFrame.grid(sticky=E + W, columnspan=5)
+    # After items frames
+    totalFrame = tk.Frame(master=ui_root)
+    totalFrame.grid(sticky=E + W)
     totalFrame.columnconfigure(0, weight=1)
+    totalFrame.columnconfigure(1, weight=1)
 
-    totalLabel = tk.Label(master=totalFrame, text="TOTAL. ", bg=CUSTOMER_BG, font=('bold', 18))
-    totalLabel.grid(row=0, columnspan=1, column=0, sticky=E)
+    # Total Row
+    totalLabel = tk.Label(master=totalFrame, font=('bold', 15), text="TOTAL. ")
+    totalLabel.grid(row=0, columnspan=1, column=1)
 
     totalVar.set("Rs /= 0.0")
-    totalSum = tk.Entry(master=totalFrame, textvar=totalVar, font=18, justify='right')
-    totalSum.grid(row=0, columnspan=1, column=1)
+    totalSum = tk.Label(master=totalFrame, textvar=totalVar, font=15, anchor=E, width=15)
+    totalSum.grid(row=0, columnspan=1, column=1, padx=20, sticky=E)
 
-    # Button to add the new rows
-    addBtn = Button(ui_root, text="Add New Item", command=lambda: add_row(itemFrame, totalVar))
-    addBtn.grid(columnspan=5)
+    # Button to remove all and add the new rows
+    rmBtn = Button(totalFrame, text="Remove All Items", command=lambda: warning_popup("Are you sure you want to "
+                                                                                      "remove all the items?"))
+    rmBtn.grid(row=1, column=0, sticky=E, padx=5)
+
+    addBtn = Button(totalFrame, text="Add New Item", command=lambda: add_row(itemFrame, totalVar))
+    addBtn.grid(row=1, column=1, sticky=W, padx=5)
+    # TOTAL FRAME ENDS --------------------------------------------------------------------------------
 
     tk.Label(master=ui_root).grid()
-    WIDTH = ui_root.winfo_reqwidth()
-    HEIGHT = ui_root.winfo_reqheight()
-
-    def print_len():
-        print(len(all_entries))
 
     def check(e):
-        nonlocal WIDTH, HEIGHT
         WIDTH = ui_root.winfo_width()
         HEIGHT = ui_root.winfo_height() + 10
         ui_root.minsize(WIDTH, HEIGHT)

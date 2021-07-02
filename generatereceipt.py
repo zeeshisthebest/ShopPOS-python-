@@ -218,12 +218,13 @@ class GenerateReceipt:
 
     def print_the_total(self, total_grand):
         self.__row_num += 1
-        grand_total_cells_to_merge = f'A{self.__row_num}:I{self.__row_num}'
+        grand_total_cells_to_merge = f'A{self.__row_num}:H{self.__row_num}'
         self.__sheet.merge_cells(grand_total_cells_to_merge)
+        self.__sheet.merge_cells(f'I{self.__row_num}:J{self.__row_num}')
         self.__sheet[f'A{self.__row_num}'].value = "TOTAL: Rupees"
         self.__sheet[f'A{self.__row_num}'].font = arial_font
-        self.__sheet[f'J{self.__row_num}'].value = "{:.0f}".format(total_grand)
-        self.__sheet[f'J{self.__row_num}'].font = arial_font
+        self.__sheet[f'I{self.__row_num}'].value = "{:.0f}".format(total_grand)
+        self.__sheet[f'I{self.__row_num}'].font = arial_font
 
         for alpha in "ABCDEFGHIJ":
             self.__sheet[f'{alpha}{self.__row_num}'].border = total_border
