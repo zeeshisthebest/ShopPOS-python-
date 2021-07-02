@@ -69,13 +69,35 @@ class CustomerInfo(tk.Frame):
 
     def on_code_write(self, *args):
         code = self.codeVar.get()
-        if len(code) > 4:
-            self.codeVar.set(code[:4])
+        code_string = ""
+
+        for num in code:
+            if code != "" and num.isnumeric():
+                code_string += num;
+            elif code != "" and not num.isnumeric():
+                self.codeVar.set(code)
+                break
+
+        if len(code_string) > 4:
+            code_string = code_string[:4]
+
+        self.codeVar.set(code_string)
 
     def on_extension_write(self, *args):
         ext = self.extensionVar.get()
-        if len(ext) > 7:
-            self.extensionVar.set(ext[:7])
+        extension_string = ""
+
+        for num in ext:
+            if ext != "" and num.isnumeric():
+                extension_string += num;
+            elif ext != "" and not num.isnumeric():
+                self.extensionVar.set(ext)
+                break
+
+        if len(extension_string) > 7:
+            extension_string = extension_string[:7]
+
+        self.extensionVar.set(extension_string)
 
     def on_code_click(self, e):
         self.phoneEntryCode.delete(0, END)
@@ -92,3 +114,5 @@ class CustomerInfo(tk.Frame):
         }
 
         return info
+
+
