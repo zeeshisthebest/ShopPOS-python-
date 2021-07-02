@@ -14,7 +14,7 @@ class CustomerInfo(tk.Frame):
         # To show the voice number
         invoiceLabel = tk.Label(master=self, text="INVOICE # ", width=len("INVOICE # ") + 1)
         invoiceLabel.grid(row=1, column=0)
-
+        self.info = dict()
         invoiceEntry = tk.Entry(master=self, justify='center')
         invoiceEntry.grid(row=1, column=1)
         invoiceEntry.insert(0, kw['INVOICE'])
@@ -34,7 +34,7 @@ class CustomerInfo(tk.Frame):
 
         self.customerEntry = Entry(master=self, width=40)
         self.customerEntry.grid(row=3, column=1)
-        self.customerEntry.insert(0, "unknown")
+        self.customerEntry.insert(0, "")
 
         # Phone number max length restriction
         self.codeVar = tk.StringVar()
@@ -71,7 +71,7 @@ class CustomerInfo(tk.Frame):
 
         for num in code:
             if code != "" and num.isnumeric():
-                code_string += num;
+                code_string += num
             elif code != "" and not num.isnumeric():
                 self.codeVar.set(code)
                 break
@@ -105,12 +105,13 @@ class CustomerInfo(tk.Frame):
         self.phoneEntryExtension.delete(0, END)
         self.phoneEntryExtension.unbind('<Button-1>', self.on_ext_click_id)
 
-    def get_customer_info(self):
-        info = {
+    def get_info(self):
+        if len(self.phoneEntryCode.get()) != 4 or len(self.phoneEntryExtension.get()) != 7:
+            return False
+
+        self.info = {
             "name": self.customerEntry.get(),
-            "cell": f'{self.phoneEntryCode.get()}-{self.phoneEntryExtension}'
+            "cell": f'{self.phoneEntryCode.get()}-{self.phoneEntryExtension.get()}'
         }
 
-        return info
-
-
+        return self.info

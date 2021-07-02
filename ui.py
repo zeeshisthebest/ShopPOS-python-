@@ -1,8 +1,8 @@
 from generatereceipt import GenerateReceipt as gR
 
 
-def main():
-    invoice_number = 12345
+def main(**kw):
+    invoice_number = kw['invoice']
     receipt = gR(invoice_number)
 
     # Customer info
@@ -51,7 +51,7 @@ def main():
         items_list_to_pass.append(item_row)
 
     receipt.print_list(items_list_to_pass)
-    receipt.print_to_pdf()
+    receipt.save_excel()
 
 
 if __name__ == '__main__':

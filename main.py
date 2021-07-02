@@ -4,6 +4,7 @@ from datetime import date
 from customerinfo import CustomerInfo as ci
 import popups
 from itemsrow import ItemsRow as iT
+import savefile as sf
 
 CUSTOMER_BG = "#c6c6c6"
 PAD_HOR = 5
@@ -26,10 +27,37 @@ def root():
             del all_entries[0]
         add_row(itemFrame, totalVar)
 
+    def save_file(btnType):
+        data_dict['invoice'] = INVOICE  # stores the invoice number
+
+        info = customer.get_info()  # Get Name and Number
+        if not info:
+            popups.showinfo(message="Phone number is not correct!!")
+            return False  # Stopping the file from saving
+
+        data_dict.update(info)
+
+        for index, each_row in enumerate(all_entries):
+            print(each_row.total.get())
+            tot = float(each_row.total.get())
+            print(tot != 0, tot != 0.0)
+            if tot != 0 or tot != 0.0:
+                data_dict[index] = {
+                    "serial": each_row.serial1.get(),
+                    "item": each_row.item.get(),
+                    "unit": each_row.unit.get(),
+                    "quantity": each_row.quantity.get(),
+                    "total": each_row.total.get()
+                }
+        print(len(data_dict))
+        data_dict['grand_total'] = totalVar.get()
+        sf.SaveFile(dictionary=data_dict, pdf=btnType)
+
     APP_NAME = "Customer Invoicing - Saleem Chemicals"
     INVOICE = "00000"
     DATE = date.today()
     all_entries = []
+    data_dict = dict()
 
     ui_root = tk.Tk()
     ui_root.title(APP_NAME)
@@ -94,15 +122,15 @@ def root():
     buttonFrame = tk.Frame(master=ui_root)
     buttonFrame.grid(sticky=E + W)
 
-    saveExcelBtn = tk.Button(master=buttonFrame, text="Save in Excel")
+    saveExcelBtn = tk.Button(master=buttonFrame, text="Save in Excel", command=lambda: save_file(False))
     saveExcelBtn.pack(side="right", padx=PAD_HOR, pady=5)
 
-    savePdfBtn = tk.Button(master=buttonFrame, text="Save in PDF/Print")
+    savePdfBtn = tk.Button(master=buttonFrame, text="Save in PDF/Print", command=lambda: save_file(True))
     savePdfBtn.pack(side="right", padx=PAD_HOR, pady=5)
 
     # Exit Button
     tk.Button(master=buttonFrame, text="EXIT",
-              command=lambda: warning_popup("Do you really want to exit?", ui_root.destroy))\
+              command=lambda: warning_popup("Do you really want to exit?", ui_root.destroy)) \
         .pack(side='left', padx=PAD_HOR, pady=5, anchor='center')
 
     # SAVING BUTTONS FRAME END ------------------------------------------------------------------------

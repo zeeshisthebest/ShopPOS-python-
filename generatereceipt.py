@@ -1,4 +1,6 @@
 import datetime
+from tkinter.messagebox import showinfo
+
 import win32api
 import win32print
 from openpyxl import Workbook as wB
@@ -34,12 +36,13 @@ footer_font_color = '666666'
 # Styles finished /////////////////////////////////////////////////////////////
 
 class GenerateReceipt:
-    def __init__(self, invoice):
+    def __init__(self, invoice, path):
         self.__invoice = invoice
         self.__title = f"Invoice {invoice} {datetime.date.today()}"
         self.xls = wB()
         self.__sheet = self.xls.active
         self.filename = self.__title + ".xlsx"
+        self.path = path
         self.__row_num = 9
         # adjusting the widths of the Columns
         self.__sheet.column_dimensions['A'].width = 5
@@ -164,7 +167,8 @@ class GenerateReceipt:
         offset = 9
         grand_total = 0
         # Inserting the list data
-        for row in item_list:
+        for key in range(0, len(item_list) - 4):
+            row = item_list[key]
             str_row_num = str(self.__row_num)
             merging_row = 'B' + str_row_num + ':' + 'G' + str_row_num
             self.__sheet.merge_cells(merging_row)
@@ -178,12 +182,14 @@ class GenerateReceipt:
 
             # Writing the data in the cells
             # serial number
-            self.__sheet[serial_number].value = self.__row_num - offset
+            # self.__sheet[serial_number].value = self.__row_num - offset ------------------------------
+            self.__sheet[serial_number].value = row['serial']
             self.__sheet[serial_number].alignment = main_alignment
             self.__sheet[serial_number].border = thin_border
             self.__sheet[serial_number].font = arial_font
             #  Items cell
-            self.__sheet[item_cell_number].value = '    ' + row[0].title()
+            # self.__sheet[item_cell_number].value = '    ' + row[0].title() ---------------------------
+            self.__sheet[item_cell_number].value = '    ' + row['item'].title()
             self.__sheet[item_cell_number].border = thin_border
             self.__sheet[item_cell_number].font = arial_font
             self.__sheet[f'C{self.__row_num}'].border = thin_border
@@ -193,20 +199,24 @@ class GenerateReceipt:
             self.__sheet[f'G{self.__row_num}'].border = thin_border
 
             # unit cell
-            self.__sheet[unit_cell_number].value = row[1]
+            # self.__sheet[unit_cell_number].value = row[1] ----------------------
+            self.__sheet[unit_cell_number].value = row['unit']
             self.__sheet[unit_cell_number].border = thin_border
             self.__sheet[unit_cell_number].font = arial_font
             self.__sheet[total_cell_number].alignment = date_alignment
 
             # quantity cell
-            self.__sheet[quantity_cell_number].value = row[2]
+            # self.__sheet[quantity_cell_number].value = row[2] ----------------------------
+            self.__sheet[quantity_cell_number].value = row['quantity']
             self.__sheet[quantity_cell_number].border = thin_border
             self.__sheet[quantity_cell_number].font = arial_font
             self.__sheet[total_cell_number].alignment = date_alignment
 
             # total cell
-            grand_total += row[2] * row[1]
-            self.__sheet[total_cell_number].value = row[2] * row[1]
+            # grand_total += row[2] * row[1]
+
+            # self.__sheet[total_cell_number].value = row[2] * row[1] ------------------------
+            self.__sheet[total_cell_number].value = row['total']
             self.__sheet[total_cell_number].border = thin_border
             self.__sheet[total_cell_number].font = arial_font
             self.__sheet[total_cell_number].alignment = date_alignment
@@ -214,17 +224,18 @@ class GenerateReceipt:
             # To iterate through the rows
             self.__row_num += 1
 
-        self.print_the_total(grand_total)
+        # self.print_the_total(grand_total)
 
     def print_the_total(self, total_grand):
         self.__row_num += 1
         grand_total_cells_to_merge = f'A{self.__row_num}:H{self.__row_num}'
         self.__sheet.merge_cells(grand_total_cells_to_merge)
         self.__sheet.merge_cells(f'I{self.__row_num}:J{self.__row_num}')
-        self.__sheet[f'A{self.__row_num}'].value = "TOTAL: Rupees"
+        self.__sheet[f'A{self.__row_num}'].value = "TOTAL: "
         self.__sheet[f'A{self.__row_num}'].font = arial_font
-        self.__sheet[f'I{self.__row_num}'].value = "{:.0f}".format(total_grand)
+        self.__sheet[f'I{self.__row_num}'].value = total_grand
         self.__sheet[f'I{self.__row_num}'].font = arial_font
+        self.__sheet[f'I{self.__row_num}'].alignment = date_alignment
 
         for alpha in "ABCDEFGHIJ":
             self.__sheet[f'{alpha}{self.__row_num}'].border = total_border
@@ -232,7 +243,7 @@ class GenerateReceipt:
         self.__sheet[f'A{self.__row_num}'].alignment = date_alignment
         self.__sheet[f'J{self.__row_num}'].alignment = price_alignment
 
-    def print_to_pdf(self):
+    def save_excel(self):
 
         print_size = f'A1:J{self.__row_num}'
         self.__sheet.print_options.horizontalCentered = True
@@ -250,12 +261,17 @@ class GenerateReceipt:
         self.__sheet.page_margins.bottom = 1
 
         try:
+            print(self.path)
+            self.xls.save(self.path)
 
-            self.xls.save(self.filename)
-
-            win32api.ShellExecute(0, "printto", self.filename, '"%s"' % win32print.GetDefaultPrinter(),
-                                  ".", 0)
         except Exception:
-            print("print to pdf error")
+            print("saving error", Exception)
             return False
         return True
+
+    def print_to_pdf(self):
+        try:
+            win32api.ShellExecute(0, "printto", self.path, '"%s"' % win32print.GetDefaultPrinter(),
+                                  ".", 0)
+        except Exception:
+            showinfo("Error", "There was error in printing as pdf")
