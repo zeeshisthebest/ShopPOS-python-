@@ -7,7 +7,7 @@ from tkinter.messagebox import showinfo, showerror
 
 
 class SaveFile(tk.Toplevel):
-    def __init__(self,dictionary, pdf=False, **kw):
+    def __init__(self, dictionary, pdf=False, **kw):
         super().__init__(**kw)
         self.grab_set()
         self.dictionary = dictionary
@@ -22,7 +22,7 @@ class SaveFile(tk.Toplevel):
         self.pathEntry.grid(row=1, padx=5, pady=10, column=0, sticky='we')
 
         tk.Button(self, text="Choose Location", command=self.get_path).grid(row=1, padx=10, pady=10, column=1)
-        tk.Button(self, text="Save Invoice", command=self.save_file)\
+        tk.Button(self, text="Save Invoice", command=self.save_file) \
             .grid(row=2, padx=10, pady=10, columnspan=2)
 
         self.resizable(width=False, height=False)

@@ -10,7 +10,6 @@ ROW_COLOR = "#e6e1e1"
 class ItemsRow(tk.Frame):
     def __init__(self, parent, total=None, entries=None, index=0, header=False):
         tk.Frame.__init__(self, parent)
-        self.parent = parent
         self.index = index
         self.list = entries
         self.totalVar = total

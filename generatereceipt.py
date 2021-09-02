@@ -216,7 +216,7 @@ class GenerateReceipt:
             # grand_total += row[2] * row[1]
 
             # self.__sheet[total_cell_number].value = row[2] * row[1] ------------------------
-            self.__sheet[total_cell_number].value = row['total']
+            self.__sheet[total_cell_number].value = "{:,}".format(row['total'])
             self.__sheet[total_cell_number].border = thin_border
             self.__sheet[total_cell_number].font = arial_font
             self.__sheet[total_cell_number].alignment = date_alignment

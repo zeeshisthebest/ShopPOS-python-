@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import *
 from datetime import date
+
+import scrollcanvas
 from customerinfo import CustomerInfo as ci
 import popups
 from itemsrow import ItemsRow as iT
@@ -11,6 +13,10 @@ PAD_HOR = 5
 
 
 def root():
+    def reset_all():
+        ui_root.destroy()
+        main()
+
     def add_row(frame, total):
         rows = len(all_entries) + 1
         itemRowFrame = iT(frame, entries=all_entries, index=rows, header=False, total=total)
@@ -43,10 +49,10 @@ def root():
             print(tot != 0, tot != 0.0)
             if tot != 0 or tot != 0.0:
                 data_dict[index] = {
-                    "serial": each_row.serial1.get(),
+                    "serial": float(each_row.serial1.get()),
                     "item": each_row.item.get(),
-                    "unit": each_row.unit.get(),
-                    "quantity": each_row.quantity.get(),
+                    "unit": float(each_row.unit.get()),
+                    "quantity": float(each_row.quantity.get()),
                     "total": each_row.total.get()
                 }
         print(len(data_dict))
@@ -90,6 +96,10 @@ def root():
     itemFrame.columnconfigure(3, weight=1)
     itemFrame.columnconfigure(4, weight=1)
 
+    # scrollar = scrollcanvas.ScrollableFrame(itemFrame, itemsrow)
+    # canvas_scroll_region = scrollar.frame #Getting the region inside canvas where i have to place rows
+    # add_row(canvas_scroll_region)  #this is the function that add new row upon the button click
+
     for i in range(0, 5):
         add_row(itemFrame, total=totalVar)
 
@@ -131,6 +141,8 @@ def root():
     # Exit Button
     tk.Button(master=buttonFrame, text="EXIT",
               command=lambda: warning_popup("Do you really want to exit?", ui_root.destroy)) \
+        .pack(side='left', padx=PAD_HOR, pady=5, anchor='center')
+    tk.Button(master=buttonFrame, text='Reset All', command=lambda: warning_popup("Reset all?", reset_all)) \
         .pack(side='left', padx=PAD_HOR, pady=5, anchor='center')
 
     # SAVING BUTTONS FRAME END ------------------------------------------------------------------------
