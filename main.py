@@ -34,7 +34,7 @@ def root():
         add_row(itemFrame, totalVar)
 
     def save_file(btnType):
-        data_dict['invoice'] = INVOICE  # stores the invoice number
+         # data_dict['invoice'] = invoice  # stores the invoice number
 
         info = customer.get_info()  # Get Name and Number
         if not info:
@@ -53,6 +53,7 @@ def root():
                     "item": each_row.item.get(),
                     "unit": float(each_row.unit.get()),
                     "quantity": float(each_row.quantity.get()),
+                    "measure": each_row.option_menu.get(),
                     "total": each_row.total.get()
                 }
         print(len(data_dict))
@@ -60,7 +61,7 @@ def root():
         sf.SaveFile(dictionary=data_dict, pdf=btnType)
 
     APP_NAME = "Customer Invoicing - Saleem Chemicals"
-    INVOICE = "00000"
+    # INVOICE = "00000"
     DATE = date.today()
     all_entries = []
     data_dict = dict()
@@ -76,7 +77,8 @@ def root():
     padding_label.grid(row=0)
 
     # INFORMATION FRAME ---------------------------------------------------------------------------
-    customer = ci(parent=ui_root, DATE=DATE, INVOICE=INVOICE)
+    # customer = ci(parent=ui_root, DATE=DATE, INVOICE=INVOICE)
+    customer = ci(parent=ui_root, DATE=DATE)
     customer.grid(padx=PAD_HOR, sticky=E + W)
     # INFORMATION END ----------------------------------------------------------------------------
 

@@ -40,7 +40,7 @@ class SaveFile(tk.Toplevel):
             return
 
         receipt = gr.GenerateReceipt(self.dictionary['invoice'], self.pathEntry.get())
-        receipt.set_customer_name(self.dictionary['name'], self.dictionary['cell'])
+        receipt.set_customer_name(self.dictionary['name'], self.dictionary['cell'], self.dictionary['address'])
         receipt.print_list(self.dictionary)
         receipt.print_the_total(self.dictionary['grand_total'])
         try:

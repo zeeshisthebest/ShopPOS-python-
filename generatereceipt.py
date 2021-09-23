@@ -13,7 +13,7 @@ main_alignment = Alignment(horizontal='center', vertical='center', text_rotation
 title_alignment = Alignment(horizontal='right', vertical='center', text_rotation=0,
                             wrap_text=True, shrink_to_fit=False, indent=0)
 date_alignment = Alignment(horizontal='right', vertical='center', text_rotation=0,
-                           wrap_text=False, shrink_to_fit=False, indent=0)
+                           wrap_text=True, shrink_to_fit=False, indent=0)
 price_alignment = Alignment(horizontal='center', vertical='center', text_rotation=0,
                             wrap_text=False, shrink_to_fit=False, indent=0)
 customer_alignment = Alignment(horizontal='left', vertical='center', text_rotation=0,
@@ -43,7 +43,7 @@ class GenerateReceipt:
         self.__sheet = self.xls.active
         self.filename = self.__title + ".xlsx"
         self.path = path
-        self.__row_num = 9
+        self.__row_num = 10
         # adjusting the widths of the Columns
         self.__sheet.column_dimensions['A'].width = 5
         self.__sheet.column_dimensions['B'].width = 12
@@ -121,7 +121,7 @@ class GenerateReceipt:
         self.__sheet.merge_cells('A1:J3')
         title_cell = self.__sheet['A1']
         # title_cell.fill = company_name_fill
-        title_cell.value = "0333 - 2384042\n0332 - 2569183\nShop# 17, B - Road\nLiaquatabad, Karachi"
+        title_cell.value = "0333 - 2384042\n0332 - 2569183\nOffice# 17, B - Road\nLiaquatabad, Karachi"
         img = Image('logo.png')
         img.width = 663 / 7
         img.height = 392 / 7
@@ -137,37 +137,48 @@ class GenerateReceipt:
         self.__sheet[f'H{date_cell_range}'].font = head_font
 
         # Items list header
-        self.__sheet['A8'] = '#'
-        self.__sheet['B8'] = 'Items'
-        self.__sheet['H8'] = 'Unit'
-        self.__sheet['I8'] = 'Quantity'
-        self.__sheet['J8'] = 'Total'
+        self.__sheet['A9'] = '#'
+        self.__sheet['B9'] = 'Items'
+        self.__sheet['H9'] = 'Unit'
+        self.__sheet['I9'] = 'Quantity'
+        self.__sheet['J9'] = 'Total'
 
         for a in "ABHIJ":
-            self.__sheet[f'{a}8'].alignment = main_alignment
-            self.__sheet[f'{a}8'].border = thin_border
-            self.__sheet[f'{a}8'].font = arial_font
+            self.__sheet[f'{a}9'].alignment = main_alignment
+            self.__sheet[f'{a}9'].border = thin_border
+            self.__sheet[f'{a}9'].font = arial_font
 
-        self.__sheet.merge_cells('B8:G8')
+        self.__sheet.merge_cells('B9:G9')
         # Item list head finished//////////////////////////////////////////
 
-    def set_customer_name(self, customer, cell):
+    def set_customer_name(self, customer, cell, address):
         customer_cell = self.__sheet['A5']
         customer_cell.value = "Customer: " + customer.title()
+
         contact_cell = self.__sheet['A6']
         contact_cell.value = "Contact: " + (cell if cell != "" else "----")
+
+        address_cell = self.__sheet['A7']
+        address_cell.value = "Address: " + address.title()
+
         customer_cell.alignment = customer_alignment
         customer_cell.font = arial_font
+
         contact_cell.alignment = customer_alignment
         contact_cell.font = arial_font
+
+        address_cell.alignment = customer_alignment
+        address_cell.font = arial_font
+
         self.__sheet.merge_cells('A5:G5')
         self.__sheet.merge_cells('A6:G6')
+        self.__sheet.merge_cells('A7:G7')
 
     def print_list(self, item_list):
         offset = 9
         grand_total = 0
         # Inserting the list data
-        for key in range(0, len(item_list) - 4):
+        for key in range(0, len(item_list) - 5):
             row = item_list[key]
             str_row_num = str(self.__row_num)
             merging_row = 'B' + str_row_num + ':' + 'G' + str_row_num
@@ -189,7 +200,7 @@ class GenerateReceipt:
             self.__sheet[serial_number].font = arial_font
             #  Items cell
             # self.__sheet[item_cell_number].value = '    ' + row[0].title() ---------------------------
-            self.__sheet[item_cell_number].value = '    ' + row['item'].title()
+            self.__sheet[item_cell_number].value = f"    {row['item'].title()} ({row['measure']})"
             self.__sheet[item_cell_number].border = thin_border
             self.__sheet[item_cell_number].font = arial_font
             self.__sheet[f'C{self.__row_num}'].border = thin_border
@@ -216,7 +227,7 @@ class GenerateReceipt:
             # grand_total += row[2] * row[1]
 
             # self.__sheet[total_cell_number].value = row[2] * row[1] ------------------------
-            self.__sheet[total_cell_number].value = "{:,}".format(row['total'])
+            self.__sheet[total_cell_number].value = row['total']
             self.__sheet[total_cell_number].border = thin_border
             self.__sheet[total_cell_number].font = arial_font
             self.__sheet[total_cell_number].alignment = date_alignment

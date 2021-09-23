@@ -3,6 +3,7 @@ from tkinter import *
 from datetime import date
 
 CUSTOMER_TITLE = "Customer Name: "
+ADDRESS_TITLE = "Address: "
 PHONE_TITLE = "Enter the Number:"
 CUSTOMER_BG = "#c6c6c6"
 
@@ -15,10 +16,10 @@ class CustomerInfo(tk.Frame):
         invoiceLabel = tk.Label(master=self, text="INVOICE # ", width=len("INVOICE # ") + 1)
         invoiceLabel.grid(row=1, column=0)
         self.info = dict()
-        invoiceEntry = tk.Entry(master=self, justify='center')
-        invoiceEntry.grid(row=1, column=1)
-        invoiceEntry.insert(0, kw['INVOICE'])
-        invoiceEntry['state'] = "disabled"
+        self.invoiceEntry = tk.Entry(master=self, justify='center')
+        self.invoiceEntry.grid(row=1, column=1)
+        self.invoiceEntry.insert(0, "00")
+        # invoiceEntry['state'] = "disabled"
 
         # To show the date
         dateLabel = tk.Label(master=self, text=f"Date: {kw['DATE']}")
@@ -64,6 +65,15 @@ class CustomerInfo(tk.Frame):
         self.phoneEntryExtension = Entry(master=phoneFrame, width=14, textvariable=self.extensionVar)
         self.phoneEntryExtension.grid(row=0, column=2)
         self.on_ext_click_id = self.phoneEntryExtension.bind('<Button-1>', self.on_ext_click)
+
+        #     Address Views
+        addressLabel = tk.Label(master=self, text=ADDRESS_TITLE, bg=CUSTOMER_BG
+                                , width=len(CUSTOMER_TITLE) + 2)
+        addressLabel.grid(row=5, padx=10, sticky=E)
+
+        self.addressEntry = Entry(master=self, width=40)
+        self.addressEntry.grid(row=5, column=1)
+        self.addressEntry.insert(0, "")
 
     def on_code_write(self, *args):
         code = self.codeVar.get()
@@ -111,7 +121,9 @@ class CustomerInfo(tk.Frame):
 
         self.info = {
             "name": self.customerEntry.get(),
-            "cell": f'{self.phoneEntryCode.get()}-{self.phoneEntryExtension.get()}'
+            "cell": f'{self.phoneEntryCode.get()}-{self.phoneEntryExtension.get()}',
+            "address": self.addressEntry.get(),
+            "invoice": self.invoiceEntry.get()
         }
 
         return self.info

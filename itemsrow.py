@@ -1,4 +1,9 @@
+import re
 import tkinter as tk
+from tkinter import ttk
+
+import floatvalidate
+import intvalidate
 
 E = tk.E
 W = tk.W
@@ -31,7 +36,7 @@ class ItemsRow(tk.Frame):
         self.add_to_grid()
 
     def configure_column(self):
-        for i in range(0, 10):
+        for i in range(0, 11):
             self.columnconfigure(i, weight=1)
 
     def make_header(self):
@@ -50,6 +55,10 @@ class ItemsRow(tk.Frame):
         self.quantity = tk.Entry(self, justify="center", bg=HEADER_COLOR, width=WIDE)
         self.quantity.insert(0, "Quant.")
         self.quantity.configure(state="disabled")
+
+        self.measure = tk.Entry(self, justify="center", bg=HEADER_COLOR, width=WIDE)
+        self.measure.insert(0, "Measure")
+        self.measure.configure(state="disabled")
 
         self.total = tk.Entry(self, justify="center", bg=HEADER_COLOR, width=WIDE)
         self.total.insert(0, "Total")
@@ -72,9 +81,21 @@ class ItemsRow(tk.Frame):
 
         self.unit = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE, textvar=self.unitVar)
         # self.unit.insert(0, 0)
+        intvalidate.int_validate(self.unit, from_=0, to=999999)
 
         self.quantity = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE, textvar=self.qVar)
         # self.quantity.insert(0, 0)
+        floatvalidate.float_validate(self.quantity, from_=0, to=999999)
+
+        # self.measure = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE)
+        self.option_menu = tk.StringVar()
+        options = ["mg", "grams", "KG", "Litre", "ml", "Bag", "Drum", "Can", "Gallon", "-", "pack"]
+        # self.measure = ttk.OptionMenu(self, self.option_menu, options[2], *options, direction="below")
+        self.measure = ttk.Combobox(self, textvariable=self.option_menu)
+        self.measure['values'] = options
+        self.measure['state'] = "readonly"
+        self.measure.configure(width=WIDE-3)
+        self.measure.set(options[2])
 
         self.total = tk.Entry(self, justify="center", bg=ROW_COLOR, width=WIDE)
         self.total.insert(0, 0)
@@ -85,7 +106,8 @@ class ItemsRow(tk.Frame):
         self.item.grid(row=0, column=1, sticky=E + W, columnspan=6)
         self.unit.grid(row=0, column=7, sticky=E + W, columnspan=1)
         self.quantity.grid(row=0, column=8, sticky=E + W, columnspan=1)
-        self.total.grid(row=0, column=9, sticky=E + W, columnspan=1)
+        self.measure.grid(row=0, column=9, sticky=E + W, columnspan=1, padx=0)
+        self.total.grid(row=0, column=10, sticky=E + W, columnspan=1)
 
     def remove_self(self):
         self.grid_forget()
@@ -107,22 +129,16 @@ class ItemsRow(tk.Frame):
         q = self.quantity.get()
         u = self.unit.get()
 
-        if q == '':
+        if q == "":
             q = 0.0
-        elif not q.isnumeric():
-            self.qVar.set(0)
-            q = 0.0
-        else:
-            q = float(q)
-        if u == '':
+        if u == "":
             u = 0.0
-        elif not u.isnumeric():
-            self.unitVar.set(0)
-            u = 0.0
-        else:
-            u = float(u)
 
-        self.total.insert(0, q * u)
+        q = float(q)
+        u = float(u)
+
+        self.total.insert(0, float("{:.2f}".format(q * u)))
+
         self.total.configure(state="disabled")
         self.calculate_total()
 
