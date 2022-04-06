@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import *
 from datetime import date
-
-import scrollcanvas
 from customerinfo import CustomerInfo as ci
 import popups
 from itemsrow import ItemsRow as iT

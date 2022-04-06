@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import *
-from datetime import date
 
 CUSTOMER_TITLE = "Customer Name: "
 ADDRESS_TITLE = "Address: "
